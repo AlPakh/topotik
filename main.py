@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from db import database, User
+from database import SessionLocal, User
 from sqlalchemy.orm import Session
 
 app = FastAPI()
