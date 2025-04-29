@@ -11,12 +11,39 @@ ALGORITHM  = config.settings.ALGORITHM
 EXPIRE_MIN = config.settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 # ————————————————————————————————————————————————
-# User & Auth (как было выше)
-# ————————————————————————————————————————————————
+# User
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.User).filter(models.User.email == email).first()
+
+def create_user(db: Session, user: schemas.UserCreate):
+    hashed = pwd_context.hash(user.password)
+    db_user = models.User(username=user.username, email=user.email, hashed_password=hashed)
+    db.add(db_user); db.commit(); db.refresh(db_user)
+    return db_user
 
 # ————————————————————————————————————————————————
-# Maps (как было выше)
+# Auth
+def authenticate_user(db: Session, email: str, password: str):
+    user = get_user_by_email(db, email)
+    if not user or not pwd_context.verify(password, user.hashed_password):
+        return False
+    return user
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=EXPIRE_MIN)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 # ————————————————————————————————————————————————
+# Maps
+def create_map(db: Session, map_in: schemas.MapCreate, user_id):
+    db_map = models.Map(**map_in.dict(), user_id=user_id)
+    db.add(db_map); db.commit(); db.refresh(db_map)
+    return db_map
+
+def get_maps(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Map).offset(skip).limit(limit).all()
 
 # ————————————————————————————————————————————————
 # Collections
