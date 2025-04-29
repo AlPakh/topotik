@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: topotik-backend
+    name: topotik
     env: python
-    repo: https://github.com/yourusername/your-repo
+    repo: https://github.com/AlPakh/topotik
     plan: free
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
@@ -12,4 +12,4 @@ services:
           name: topotik-db
           property: connectionString
       - key: SECRET_KEY
-        value: "<скрытый-секрет>"
+        value: "< / / / >"
