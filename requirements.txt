@@ -1,4 +1,8 @@
 fastapi
-uvicorn
-psycopg2-binary
+uvicorn[standard]
 sqlalchemy
+psycopg2-binary
+python-dotenv
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic[email]

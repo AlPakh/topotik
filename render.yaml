@@ -1,11 +1,15 @@
 services:
   - type: web
-    name: my-fastapi-app
+    name: topotik-backend
     env: python
     repo: https://github.com/yourusername/your-repo
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn main:app --host 0.0.0.0 --port 10000"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: DATABASE_URL
-        value: postgresql://topotik_test_db_user:tUNRiVqHiwDGIz2SyqhGcJQYIezYJZKz@dpg-cv4btiggph6c738ub4a0-a.frankfurt-postgres.render.com/topotik_test_db
+        fromDatabase:
+          name: topotik-db
+          property: connectionString
+      - key: SECRET_KEY
+        value: "<скрытый-секрет>"
